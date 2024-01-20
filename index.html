@@ -40,15 +40,17 @@
 <body>
 
   <h1>Qatar KMCC</h1>
-  
-  <label for="uploadInput">
-    <strong>Step 1:</strong> Upload Your Photo
-  </label>
+    <label for="uploadInput">
+        <strong>Step 1:</strong> Upload Your Photo
+      </label>
   <input type="file" id="uploadInput" accept="image/*">
-
+    <br>
   <canvas id="cropperCanvas" width="1500" height="1644"></canvas>
   <button id="cropButton">Crop</button>
-  <button id="downloadButton" onclick="downloadImage()">Download</button>
+  <br>
+  <div>
+    <button id="downloadButton" onclick="downloadImage()">Download</button>
+  </div>
 
   <script src="https://unpkg.com/cropperjs"></script>
   <script>
