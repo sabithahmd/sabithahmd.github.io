@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KMCC Campaign</title>
+  <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    #uploadInput {
+      margin-bottom: 20px;
+    }
+    #cropperCanvas {
+      max-width: 100%;
+      cursor: crosshair;
+      width: 100%;
+    }
+    #cropButton {
+      margin-top: 20px;
+      display: none;
+    }
+    #downloadButton {
+      margin-top: 20px;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      /* Adjust styles for medium-sized screens and larger */
+      #cropperCanvas {
+        max-width: 680px; /* Set a maximum width for better visibility */
+        margin: auto; /* Center the canvas */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Qatar KMCC</h1>
+  
+  <label for="uploadInput">
+    <strong>Step 1:</strong> Upload Your Photo
+  </label>
+  <input type="file" id="uploadInput" accept="image/*">
+
+  <canvas id="cropperCanvas" width="1500" height="1644"></canvas>
+  <button id="cropButton">Crop</button>
+  <button id="downloadButton" onclick="downloadImage()">Download</button>
+
+  <script src="https://unpkg.com/cropperjs"></script>
+  <script>
+    const uploadInput = document.getElementById('uploadInput');
+    const cropperCanvas = document.getElementById('cropperCanvas');
+    const cropButton = document.getElementById('cropButton');
+    const downloadButton = document.getElementById('downloadButton');
+    let cropper;
+
+    uploadInput.addEventListener('change', handleFileSelect);
+    cropButton.addEventListener('click', handleCrop);
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const img = new Image();
+
+          img.onload = function () {
+            // Initialize Cropper.js
+            if (cropper) {
+              cropper.destroy();
+            }
+
+            cropper = new Cropper(cropperCanvas, {
+              aspectRatio: 1,
+              viewMode: 1,
+              autoCropArea: 1,
+              background: false,
+              ready: function () {
+                // Display the "Crop Image" button after Cropper.js is ready
+                cropButton.style.display = 'inline-block';
+              }
+            });
+
+            // Set the background image for Cropper.js
+            cropper.replace(img.src);
+          };
+
+          img.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleCrop() {
+      // Get the cropped data URL from Cropper.js
+      const croppedCanvas = cropper.getCroppedCanvas({ width: 680, height: 680 });
+
+      // Destroy the Cropper.js instance to hide the cropper interface
+      cropper.destroy();
+
+      // Show the "Download Final Image" button
+      downloadButton.style.display = 'inline-block';
+      
+      // Hide the "Crop Image" button
+      cropButton.style.display = 'none';
+
+      // In a complete implementation, you might want to handle errors and edge cases
+      const ctx2 = cropperCanvas.getContext('2d');
+
+      // Clear the canvas
+      ctx2.clearRect(0, 0, cropperCanvas.width, cropperCanvas.height);
+
+      // Draw the background image
+      const bgImage = new Image();
+      bgImage.onload = function() {
+        ctx2.drawImage(bgImage, 0, 0, 1500, 1644);
+      };
+      bgImage.src = 'kmcc2.png';
+
+      // Draw the cropped image on top
+      const croppedDataURL = croppedCanvas.toDataURL('image/png');
+      console.log(croppedDataURL);
+      const croppedImage = new Image();
+
+      croppedImage.onload = function () {
+        ctx2.drawImage(croppedImage, 750, 750, 680, 680);
+      };
+
+      croppedImage.src = croppedDataURL;
+    }
+
+    function downloadImage() {
+      const dataUrl = cropperCanvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'final_image.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+</body>
+</html>
