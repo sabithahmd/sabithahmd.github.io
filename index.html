@@ -3,13 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KMCC Campaign</title>
+  <title>Qatar KMCC Campaign</title>
   <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
       margin: 20px;
+    }
+    .row {
+      display: flex;
+    }
+    .my-15 {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+    .container {
+      width: 450px;
+      margin: auto;
+      text-align: center;
     }
     #uploadInput {
       margin-bottom: 20px;
@@ -28,6 +39,29 @@
       display: none;
     }
 
+    .inputfile {
+    display: none;
+}
+
+/* Style the label to act as a button */
+.uploadButton {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #059d3f;
+    border: 2px solid #026d2b;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Change button style on hover for better user feedback */
+.uploadButton:hover {
+    background-color: #026d2b;
+    border: 2px solid #059d3f;
+}
+
     @media (min-width: 768px) {
       /* Adjust styles for medium-sized screens and larger */
       #cropperCanvas {
@@ -39,17 +73,19 @@
 </head>
 <body>
 
-  <h1>Qatar KMCC</h1>
-    <label for="uploadInput">
-        <strong>Step 1:</strong> Upload Your Photo
-      </label>
-  <input type="file" id="uploadInput" accept="image/*">
+ 
+  <div class="container">
+    <img style="width:150px;" src="https://www.kmccqatar.com/gallery/KMCC%20qatar-ts1634555751.svg" data-original-width="669.48" data-original-height="669.48">
+    <div class="my-15">
+      <input type="file" id="uploadInput" accept="image/*" class="inputfile" />
+      <label for="uploadInput" class="uploadButton">Choose Photo</label>
+    </div>
+    <canvas id="cropperCanvas" width="1500" height="1644"></canvas>
+    <button id="cropButton" class="uploadButton">Crop</button>
     <br>
-  <canvas id="cropperCanvas" width="1500" height="1644"></canvas>
-  <button id="cropButton">Crop</button>
-  <br>
-  <div>
-    <button id="downloadButton" onclick="downloadImage()">Download</button>
+    <div>
+      <button class="uploadButton" id="downloadButton" onclick="downloadImage()">Download</button>
+    </div>
   </div>
 
   <script src="https://unpkg.com/cropperjs"></script>
@@ -80,7 +116,7 @@
 
             cropper = new Cropper(cropperCanvas, {
               aspectRatio: 1,
-              viewMode: 1,
+              viewMode: 2,
               autoCropArea: 1,
               background: false,
               ready: function () {
@@ -124,7 +160,7 @@
       bgImage.onload = function() {
         ctx2.drawImage(bgImage, 0, 0, 1500, 1644);
       };
-      bgImage.src = 'kmcc2.png';
+      bgImage.src = 'kmcc_6.png';
 
       // Draw the cropped image on top
       const croppedDataURL = croppedCanvas.toDataURL('image/png');
