@@ -62,6 +62,17 @@
     border: 2px solid #059d3f;
 }
 
+#nameField {
+  height: 50px;
+  width: 350px;
+  margin: 5px;
+  border-radius: 10px;
+  padding: 3px 10px;
+  border: 1px solid #059d3f;
+  color: #059d3f;
+  font-size: 23px;
+}
+
     @media (min-width: 768px) {
       /* Adjust styles for medium-sized screens and larger */
       #cropperCanvas {
@@ -76,7 +87,10 @@
  
   <div class="container">
     <img style="width:150px;" src="https://www.kmccqatar.com/gallery/KMCC%20qatar-ts1634555751.svg" data-original-width="669.48" data-original-height="669.48">
-    <div class="my-15">
+    <div id="nameDiv" class="my-15">
+      <input type="text" placeholder="Your Name" id="nameField">
+    </div>
+    <div id="photoDiv" class="my-15">
       <input type="file" id="uploadInput" accept="image/*" class="inputfile" />
       <label for="uploadInput" class="uploadButton">Choose Photo</label>
     </div>
@@ -94,6 +108,8 @@
     const cropperCanvas = document.getElementById('cropperCanvas');
     const cropButton = document.getElementById('cropButton');
     const downloadButton = document.getElementById('downloadButton');
+    const nameDiv = document.getElementById('nameDiv');
+    const photoDiv = document.getElementById('photoDiv');
     let cropper;
 
     uploadInput.addEventListener('change', handleFileSelect);
@@ -159,6 +175,16 @@
       const bgImage = new Image();
       bgImage.onload = function() {
         ctx2.drawImage(bgImage, 0, 0, 1500, 1644);
+
+        let textToWrite = document.getElementById("nameField").value;
+
+        if(textToWrite !== "")
+        {
+          ctx2.font = "bold 53px Arial";
+          ctx2.fillStyle = "white";
+          ctx2.textAlign = "center";
+          ctx2.fillText(textToWrite, 1086, 1510);
+        }
       };
       bgImage.src = 'kmcc_6.png';
 
@@ -172,13 +198,16 @@
       };
 
       croppedImage.src = croppedDataURL;
+      nameDiv.style.display = 'none';
+      photoDiv.style.display = 'none';
+
     }
 
     function downloadImage() {
       const dataUrl = cropperCanvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = 'final_image.png';
+      link.download = 'beypore_chc.png';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
