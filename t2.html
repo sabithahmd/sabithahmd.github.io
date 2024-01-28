@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cropper.js with Bootstrap Modal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Cropper.js CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+  <!-- Input box for image selection -->
+  <input type="file" id="imageInput" class="form-control mb-3">
+
+  <!-- Bootstrap Modal -->
+  <div class="modal fade" id="cropperModal" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cropperModalLabel">Crop Image</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Cropper Container -->
+          <div id="cropperContainer" style="max-height: 500px;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="cropButton">Crop</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Cropper.js JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var imageInput = document.getElementById('imageInput');
+      var cropperContainer = document.getElementById('cropperContainer');
+      var cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+      var cropper;
+  
+      // Handle image selection
+      imageInput.addEventListener('change', function (event) {
+        var file = event.target.files[0];
+  
+        if (file) {
+          // Show the modal
+          cropperModal.show();
+  
+          // Initialize Cropper on modal show
+          cropperModal._element.addEventListener('shown.bs.modal', function () {
+            // Destroy previous Cropper instance if it exists
+            if (cropper) {
+              cropper.destroy();
+            }
+  
+            // Create a new Cropper instance
+            cropper = new Cropper(cropperContainer, {
+              viewMode: 1, // Adjust as needed
+              aspectRatio: 1, // Adjust as needed
+            });
+  
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              // Replace the image in the Cropper instance
+              cropper.replace(e.target.result);
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      });
+  
+      // Destroy Cropper on modal hide
+      cropperModal._element.addEventListener('hide.bs.modal', function () {
+        if (cropper) {
+          cropper.destroy();
+        }
+      });
+  
+      // Handle crop button click
+      document.getElementById('cropButton').addEventListener('click', function () {
+        // Get the cropped data as a base64-encoded JPEG image
+        var croppedImageData = cropper.getCroppedCanvas().toDataURL('image/jpeg');
+  
+        // Create a temporary link element and trigger a download
+        var downloadLink = document.createElement('a');
+        downloadLink.href = croppedImageData;
+        downloadLink.download = 'cropped_image.jpg';
+        downloadLink.click();
+  
+        // Close the modal
+        cropperModal.hide();
+      });
+    });
+  </script>
+  
+  
+  
+  
+
+</body>
+</html>
